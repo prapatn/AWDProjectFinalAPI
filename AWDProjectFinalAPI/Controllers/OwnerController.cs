@@ -15,18 +15,27 @@ namespace AWDProjectFinalAPI.Controllers
         public OwnerController(AWDProjectFinalAPIContext context) {
             _context = context;
         }
+        [HttpGet]
+        public async Task<IEnumerable<OwnerApartment>> Get()//เอาข้อมูลออกมาโชว์
+        {
+            return await _context.OwnerApartments.ToListAsync();
+        }
 
         [HttpGet("id")]
-        public async Task<IActionResult> Get(int id)
+        public async Task<IActionResult> Get(int id)//ค้นหาตาม ID นั้น
         {
             var owner = await _context.OwnerApartments.FindAsync(id);
             return owner == null ? NotFound() : Ok(owner);
         }
+        
 
-        [HttpGet]
-        public async Task<IEnumerable<OwnerApartment>> Get()
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        public async Task<IActionResult> Create(OwnerApartment owner)
         {
-            return await _context.OwnerApartments.ToListAsync();
+            await _context.OwnerApartments.AddAsync(owner);
+            await _context.SaveChangesAsync();
+            return CreatedAtAction(nameof(Get), new {id = owner.Id},owner);
         }
 
         [HttpPut("{id}")]
