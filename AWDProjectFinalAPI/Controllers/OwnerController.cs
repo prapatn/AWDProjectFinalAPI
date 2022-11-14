@@ -38,5 +38,17 @@ namespace AWDProjectFinalAPI.Controllers
             await _context.SaveChangesAsync();
             return NoContent();
         }
+
+        [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Delete(int id)
+        {
+           OwnerApartment? owner = await _context.OwnerApartments.FindAsync(id);
+            if (owner == null) return NotFound();
+            _context.OwnerApartments.Remove(owner);
+            await _context.SaveChangesAsync();
+            return NoContent();
+        }
     }
 }
